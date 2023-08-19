@@ -52,7 +52,7 @@ export default function Comment({
       pathname
     );
 
-    router.push("/");
+    form.reset();
   };
   return (
     <Form {...form}>

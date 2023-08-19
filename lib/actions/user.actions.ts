@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import User from "../models/user.model";
+import Gori from "../models/gori.model";
 import { connectToDB } from "../mongoose";
 
 interface Params {
@@ -55,5 +56,32 @@ export async function fetchUser(userId: string) {
     // });
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
+  }
+}
+
+export async function fetchUserGoris(userId: string) {
+  try {
+    connectToDB();
+
+    // Find all goris authored by user with the given userId
+
+    // TODO: Populate community
+    const goris = await User.findOne({ id: userId }).populate({
+      path: "goris",
+      model: Gori,
+      populate: {
+        path: "children",
+        model: Gori,
+        populate: {
+          path: "author",
+          model: User,
+          select: "name image id",
+        },
+      },
+    });
+
+    return goris;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user goris: ${error.message}`);
   }
 }

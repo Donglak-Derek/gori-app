@@ -54,7 +54,7 @@ export default function PostGori({ userId }: { userId: string }) {
       path: pathname,
     });
 
-    router.push("/");
+    form.reset();
   };
 
   return (
