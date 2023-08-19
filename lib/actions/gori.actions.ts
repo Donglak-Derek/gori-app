@@ -62,3 +62,41 @@ export async function fetchGoris(pageNumber = 1, pageSize = 20) {
 
   return { goris, isNext };
 }
+
+export async function fetchGoriById(id: string) {
+  connectToDB();
+
+  try {
+    // TODO: Populate Community
+    const gori = await Gori.findById(id)
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id id name image",
+      })
+      .populate({
+        path: "children",
+        populate: [
+          {
+            path: "author",
+            model: User,
+            select: "_id id name parentId image",
+          },
+          {
+            path: "children",
+            model: Gori,
+            populate: {
+              path: "author",
+              model: User,
+              select: "_id id name parentId image",
+            },
+          },
+        ],
+      })
+      .exec();
+
+    return gori;
+  } catch (error: any) {
+    throw new Error(`Error fetching gori: ${error.message}`);
+  }
+}
