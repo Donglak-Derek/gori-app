@@ -30,3 +30,35 @@ export async function createGori({ text, author, communityId, path }: Params) {
 
   revalidatePath(path);
 }
+
+export async function fetchGoris(pageNumber = 1, pageSize = 20) {
+  connectToDB();
+
+  // Calculate the number of goris to skip
+  const skipAmount = (pageNumber - 1) * pageSize;
+
+  // Fetch the goris that have no parents (top-level goris....)
+  const gorisQuery = Gori.find({ parentId: { $in: [null, undefined] } })
+    .sort({ createdAt: "desc" })
+    .skip(skipAmount)
+    .limit(pageSize)
+    .populate({ path: "author", model: User })
+    .populate({
+      path: "children",
+      populate: {
+        path: "author",
+        model: User,
+        select: "_id name parentId image",
+      },
+    });
+
+  const totalGorisCount = await Gori.countDocuments({
+    parentId: { $in: [null, undefined] },
+  });
+
+  const goris = await gorisQuery.exec();
+
+  const isNext = totalGorisCount > skipAmount + goris.length;
+
+  return { goris, isNext };
+}
