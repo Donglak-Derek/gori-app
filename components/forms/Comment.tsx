@@ -22,6 +22,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { CommentValidation } from "@/lib/validations/gori";
 // import { createGori } from "@/lib/actions/gori.actions";
 import Image from "next/image";
+import { addCommentToGori } from "@/lib/actions/gori.actions";
 
 interface Props {
   goriId: string;
@@ -44,12 +45,12 @@ export default function Comment({
   });
 
   const onSubmit = async (values: z.infer<typeof CommentValidation>) => {
-    // await createGori({
-    //   text: values.gori,
-    //   author: userId,
-    //   communityId: null,
-    //   path: pathname,
-    // });
+    await addCommentToGori(
+      goriId,
+      values.gori,
+      JSON.parse(currentUserId),
+      pathname
+    );
 
     router.push("/");
   };

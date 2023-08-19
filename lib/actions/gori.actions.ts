@@ -100,3 +100,42 @@ export async function fetchGoriById(id: string) {
     throw new Error(`Error fetching gori: ${error.message}`);
   }
 }
+
+export async function addCommentToGori(
+  goriId: string,
+  commentText: string,
+  userId: string,
+  path: string
+) {
+  connectToDB();
+
+  try {
+    // Adding comment
+    // Find the original gori by its ID
+    const originalGori = await Gori.findById(goriId);
+
+    if (!originalGori) {
+      throw new Error("Gori not found");
+    }
+
+    // Creat a new gori with the comment text
+    const commentGori = new Gori({
+      text: commentText,
+      author: userId,
+      parentId: goriId,
+    });
+
+    // Save the new gori
+    const savedCommentGori = await commentGori.save();
+
+    // Update the original gori to include the new comment
+    originalGori.children.push(savedCommentGori._id);
+
+    // Save the original gori
+    await originalGori.save();
+
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Error adding comment to gori: ${error.message}`);
+  }
+}
