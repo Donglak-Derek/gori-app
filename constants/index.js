@@ -32,13 +32,13 @@ export const sidebarLinks = [
 ];
 
 export const profileTabs = [
-  { value: "gories", label: "Gories", icon: "/assets/reply.svg" },
+  { value: "goris", label: "Goris", icon: "/assets/reply.svg" },
   { value: "replies", label: "Replies", icon: "/assets/members.svg" },
   { value: "tagged", label: "Tagged", icon: "/assets/tag.svg" },
 ];
 
 export const communityTabs = [
-  { value: "gories", label: "Gories", icon: "/assets/reply.svg" },
+  { value: "goris", label: "Goris", icon: "/assets/reply.svg" },
   { value: "members", label: "Members", icon: "/assets/members.svg" },
   { value: "requests", label: "Requests", icon: "/assets/request.svg" },
 ];

@@ -20,6 +20,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 // import { updateUser } from "@/lib/actions/user.actions";
 import { GoriValidation } from "@/lib/validations/gori";
+import { createGori } from "@/lib/actions/gori.actions";
 
 interface Props {
   user: {
@@ -45,7 +46,16 @@ export default function PostGori({ userId }: { userId: string }) {
     },
   });
 
-  const onSubmit = () => {};
+  const onSubmit = async (values: z.infer<typeof GoriValidation>) => {
+    await createGori({
+      text: values.gori,
+      author: userId,
+      communityId: null,
+      path: pathname,
+    });
+
+    router.push("/");
+  };
 
   return (
     <Form {...form}>

@@ -34,10 +34,10 @@ export function formatDateString(dateString: string) {
 // created by chatgpt
 export function formatGoriCount(count: number): string {
   if (count === 0) {
-    return "No Gories";
+    return "No Goris";
   } else {
     const goriCount = count.toString().padStart(2, "0");
-    const goriWord = count === 1 ? "Gori" : "Gories";
+    const goriWord = count === 1 ? "Gori" : "Goris";
     return `${goriCount} ${goriWord}`;
   }
 }
