@@ -3,7 +3,7 @@ import { fetchGoriById } from "@/lib/actions/gori.actions";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import React from "react";
+import Comment from "@/components/forms/Comment";
 
 // 3: 16
 export default async function page({ params }: { params: { id: string } }) {
@@ -31,6 +31,14 @@ export default async function page({ params }: { params: { id: string } }) {
           community={gori.community}
           createdAt={gori.createdAt}
           comments={gori.children}
+        />
+      </div>
+
+      <div className="mt-7">
+        <Comment
+          goriId={gori.id}
+          currentUserImg={user.imageUrl}
+          currentUserId={JSON.stringify(userInfo._id)}
         />
       </div>
     </section>
