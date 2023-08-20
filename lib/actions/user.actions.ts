@@ -133,6 +133,34 @@ export async function fetchUsers({
 
     return { users, isNext };
   } catch (error: any) {
-    throw new Error(`Failed to connect to: ${error.message}`);
+    throw new Error(`Failed to fetchUsers: ${error.message}`);
+  }
+}
+
+export async function getActivity(userId: string) {
+  try {
+    connectToDB();
+
+    // Find all goris created by this user
+    const userGoris = await Gori.find({ author: userId });
+
+    // Collect all the child goris ids (replies) from the "children" field
+    // (collect all and put them into one array)
+    const childGoriIds = userGoris.reduce((acc, userGori) => {
+      return acc.concat(userGori.children);
+    }, []);
+
+    const replies = await Gori.find({
+      _id: { $in: childGoriIds },
+      author: { $ne: userId },
+    }).populate({
+      path: "author",
+      model: User,
+      select: "name image _id",
+    });
+
+    return replies;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch activity: ${error.message}`);
   }
 }
