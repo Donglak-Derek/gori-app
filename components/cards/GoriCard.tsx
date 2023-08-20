@@ -50,6 +50,7 @@ export default function GoriCard({
                 src={author.image}
                 alt="Profile Image"
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="cursor-pointer rounded-full"
               />
             </Link>
