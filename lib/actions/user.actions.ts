@@ -1,10 +1,12 @@
 "use server";
 
+import { FilterQuery, SortOrder } from "mongoose";
 import { revalidatePath } from "next/cache";
+
 import User from "../models/user.model";
 import Gori from "../models/gori.model";
+
 import { connectToDB } from "../mongoose";
-import { FilterQuery, SortOrder } from "mongoose";
 
 interface Params {
   userId: string;
@@ -103,14 +105,18 @@ export async function fetchUsers({
   try {
     connectToDB();
 
+    // Calculate the number of users to skip based on the page number and page size.
     const skipAmount = (pageNumber - 1) * pageSize;
 
+    // Create a case-insensitive regular expression for the provided search string.
     const regex = new RegExp(searchString, "i");
 
+    // Create an initial query object to filter users.
     const query: FilterQuery<typeof User> = {
-      id: { $ne: userId },
+      id: { $ne: userId }, // Exclude the current user from the results.
     };
 
+    // If the search string is not empty, add the $or operator to match either username or name fields.
     if (searchString.trim() !== "") {
       query.$or = [
         { username: { $regex: regex } },
@@ -118,6 +124,7 @@ export async function fetchUsers({
       ];
     }
 
+    // Define the sort options for the fetched users based on createdAt field and provided sort order.
     const sortOptions = { createdAt: sortBy };
 
     const usersQurery = User.find(query)
@@ -125,14 +132,17 @@ export async function fetchUsers({
       .skip(skipAmount)
       .limit(pageSize);
 
+    // Count the total number of users that match the search criteria (without pagination).
     const totalUsersCount = await User.countDocuments(query);
 
     const users = await usersQurery.exec();
 
+    // Check if there are more users beyond the current page.
     const isNext = totalUsersCount > skipAmount + users.length;
 
     return { users, isNext };
   } catch (error: any) {
+    console.error("Error fetching users:", error);
     throw new Error(`Failed to fetchUsers: ${error.message}`);
   }
 }
@@ -161,6 +171,7 @@ export async function getActivity(userId: string) {
 
     return replies;
   } catch (error: any) {
+    console.error("Error fetching replies: ", error);
     throw new Error(`Failed to fetch activity: ${error.message}`);
   }
 }
