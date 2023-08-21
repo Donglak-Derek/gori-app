@@ -44,6 +44,7 @@ export async function updateUser({
       revalidatePath(path);
     }
   } catch (error: any) {
+    console.log("Error updateUser:", error);
     throw new Error(`Failed to create/update user: ${error.message}`);
   }
 }
@@ -58,6 +59,7 @@ export async function fetchUser(userId: string) {
     //   model: Community,
     // });
   } catch (error: any) {
+    console.log("Error fetchUser:", error);
     throw new Error(`Failed to fetch user: ${error.message}`);
   }
 }
@@ -85,6 +87,7 @@ export async function fetchUserGoris(userId: string) {
 
     return goris;
   } catch (error: any) {
+    console.error("Error fetchUserGoris:", error);
     throw new Error(`Failed to fetch user goris: ${error.message}`);
   }
 }
@@ -142,7 +145,7 @@ export async function fetchUsers({
 
     return { users, isNext };
   } catch (error: any) {
-    console.error("Error fetching users:", error);
+    console.error("Error fetchUsers:", error);
     throw new Error(`Failed to fetchUsers: ${error.message}`);
   }
 }
@@ -171,7 +174,7 @@ export async function getActivity(userId: string) {
 
     return replies;
   } catch (error: any) {
-    console.error("Error fetching replies: ", error);
+    console.error("Error fetching activity: ", error);
     throw new Error(`Failed to fetch activity: ${error.message}`);
   }
 }

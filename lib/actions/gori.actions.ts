@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+
 import { connectToDB } from "../mongoose";
-import { GoriValidation } from "../validations/gori";
 
 import Gori from "../models/gori.model";
 import User from "../models/user.model";
@@ -32,41 +32,45 @@ export async function createGori({ text, author, communityId, path }: Params) {
 }
 
 export async function fetchGoris(pageNumber = 1, pageSize = 20) {
-  connectToDB();
+  try {
+    connectToDB();
 
-  // Calculate the number of goris to skip
-  const skipAmount = (pageNumber - 1) * pageSize;
+    // Calculate the number of goris to skip
+    const skipAmount = (pageNumber - 1) * pageSize;
 
-  // Fetch the goris that have no parents (top-level goris....)
-  const gorisQuery = Gori.find({ parentId: { $in: [null, undefined] } })
-    .sort({ createdAt: "desc" })
-    .skip(skipAmount)
-    .limit(pageSize)
-    .populate({ path: "author", model: User })
-    .populate({
-      path: "children",
-      populate: {
-        path: "author",
-        model: User,
-        select: "_id name parentId image",
-      },
+    // Fetch the goris that have no parents (top-level goris....)
+    const gorisQuery = Gori.find({ parentId: { $in: [null, undefined] } })
+      .sort({ createdAt: "desc" })
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate({ path: "author", model: User })
+      .populate({
+        path: "children",
+        populate: {
+          path: "author",
+          model: User,
+          select: "_id name parentId image",
+        },
+      });
+
+    const totalGorisCount = await Gori.countDocuments({
+      parentId: { $in: [null, undefined] },
     });
 
-  const totalGorisCount = await Gori.countDocuments({
-    parentId: { $in: [null, undefined] },
-  });
+    const goris = await gorisQuery.exec();
 
-  const goris = await gorisQuery.exec();
+    const isNext = totalGorisCount > skipAmount + goris.length;
 
-  const isNext = totalGorisCount > skipAmount + goris.length;
-
-  return { goris, isNext };
+    return { goris, isNext };
+  } catch (error: any) {
+    console.log("Error fetchGoris:", error);
+    throw new Error(`Failed to fetchGoris: ${error.message}`);
+  }
 }
 
 export async function fetchGoriById(id: string) {
-  connectToDB();
-
   try {
+    connectToDB();
     // TODO: Populate Community
     const gori = await Gori.findById(id)
       .populate({
@@ -97,6 +101,7 @@ export async function fetchGoriById(id: string) {
 
     return gori;
   } catch (error: any) {
+    console.log("Error fetchGoriById:", error);
     throw new Error(`Error fetching gori: ${error.message}`);
   }
 }
@@ -107,9 +112,8 @@ export async function addCommentToGori(
   userId: string,
   path: string
 ) {
-  connectToDB();
-
   try {
+    connectToDB();
     // Adding comment
     // Find the original gori by its ID
     const originalGori = await Gori.findById(goriId);
@@ -136,6 +140,7 @@ export async function addCommentToGori(
 
     revalidatePath(path);
   } catch (error: any) {
+    console.log("Error addCommentToGori:", error);
     throw new Error(`Error adding comment to gori: ${error.message}`);
   }
 }
