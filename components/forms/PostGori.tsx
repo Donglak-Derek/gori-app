@@ -21,6 +21,7 @@ import { usePathname, useRouter } from "next/navigation";
 // import { updateUser } from "@/lib/actions/user.actions";
 import { GoriValidation } from "@/lib/validations/gori";
 import { createGori } from "@/lib/actions/gori.actions";
+import { useOrganization } from "@clerk/nextjs";
 
 interface Props {
   user: {
@@ -37,6 +38,7 @@ interface Props {
 export default function PostGori({ userId }: { userId: string }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { organization } = useOrganization();
 
   const form = useForm({
     resolver: zodResolver(GoriValidation),
@@ -47,10 +49,11 @@ export default function PostGori({ userId }: { userId: string }) {
   });
 
   const onSubmit = async (values: z.infer<typeof GoriValidation>) => {
+    console.log("ORG ID", organization?.id);
     await createGori({
       text: values.gori,
       author: userId,
-      communityId: null,
+      communityId: organization ? organization.id : null,
       path: pathname,
     });
 

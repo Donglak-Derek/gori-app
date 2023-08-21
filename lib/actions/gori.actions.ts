@@ -6,6 +6,7 @@ import { connectToDB } from "../mongoose";
 
 import Gori from "../models/gori.model";
 import User from "../models/user.model";
+import Community from "../models/community.model";
 
 interface Params {
   text: string;
@@ -15,35 +16,55 @@ interface Params {
 }
 
 export async function createGori({ text, author, communityId, path }: Params) {
-  connectToDB();
+  try {
+    connectToDB();
 
-  const createdGori = await Gori.create({
-    text,
-    author,
-    community: null,
-  });
+    const communityIdObject = await Community.findOne(
+      { id: communityId },
+      { _id: 1 }
+    );
 
-  // Update user model
-  await User.findByIdAndUpdate(author, {
-    $push: { goris: createdGori._id },
-  });
+    const createdGori = await Gori.create({
+      text,
+      author,
+      community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
+    });
 
-  revalidatePath(path);
+    // Update user model
+    await User.findByIdAndUpdate(author, {
+      $push: { goris: createdGori._id },
+    });
+
+    if (communityIdObject) {
+      // Update Community model
+      await Community.findByIdAndUpdate(communityIdObject, {
+        $push: { goris: createdGori._id },
+      });
+    }
+
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to create gori: ${error.message}`);
+  }
 }
 
 export async function fetchGoris(pageNumber = 1, pageSize = 20) {
   try {
     connectToDB();
 
-    // Calculate the number of goris to skip
+    // Calculate the number of goris to skip based on the page number and page size.
     const skipAmount = (pageNumber - 1) * pageSize;
 
-    // Fetch the goris that have no parents (top-level goris....)
+    // Create a query to fetch the goris that have no parent (top-level goris) (a gori that is not a comment/reply).
     const gorisQuery = Gori.find({ parentId: { $in: [null, undefined] } })
       .sort({ createdAt: "desc" })
       .skip(skipAmount)
       .limit(pageSize)
       .populate({ path: "author", model: User })
+      .populate({
+        path: "community",
+        model: Community,
+      })
       .populate({
         path: "children",
         populate: {
@@ -55,7 +76,7 @@ export async function fetchGoris(pageNumber = 1, pageSize = 20) {
 
     const totalGorisCount = await Gori.countDocuments({
       parentId: { $in: [null, undefined] },
-    });
+    }); // Get total number of goris
 
     const goris = await gorisQuery.exec();
 
@@ -68,14 +89,84 @@ export async function fetchGoris(pageNumber = 1, pageSize = 20) {
   }
 }
 
-export async function fetchGoriById(id: string) {
+async function fetchAllChildGoris(goriId: string): Promise<any[]> {
+  const childGoris = await Gori.find({ parentId: goriId });
+
+  const descendantGoris = [];
+  for (const childGori of childGoris) {
+    const descendants = await fetchAllChildGoris(childGori._id);
+    descendantGoris.push(childGori, ...descendants);
+  }
+
+  return descendantGoris;
+}
+
+export async function deleteGori(id: string, path: string): Promise<void> {
   try {
     connectToDB();
+
+    // Find the gori to be deleted (the main gori)
+    const mainGori = await Gori.findById(id).populate("author community");
+
+    if (!mainGori) {
+      throw new Error("Gori not found");
+    }
+
+    // Fetch all child goris and their descendants recursively
+    const descendantGoris = await fetchAllChildGoris(id);
+
+    // Get all descendant gori IDs including the main gori ID and child gori IDs
+    const descendantGoriIds = [id, ...descendantGoris.map((gori) => gori._id)];
+
+    // Extract the authorIds and communityIds to update User and Community models respectively
+    const uniqueAuthorIds = new Set(
+      [
+        ...descendantGoris.map((gori) => gori.author?._id?.toString()), // Use optional chaining to handle possible undefined values
+        mainGori.author?._id?.toString(),
+      ].filter((id) => id !== undefined)
+    );
+
+    const uniqueCommunityIds = new Set(
+      [
+        ...descendantGoris.map((gori) => gori.community?._id?.toString()), // Use optional chaining to handle possible undefined values
+        mainGori.community?._id?.toString(),
+      ].filter((id) => id !== undefined)
+    );
+
+    // Recursively delete child goris and their descendants
+    await Gori.deleteMany({ _id: { $in: descendantGoriIds } });
+
+    // Update User model
+    await User.updateMany(
+      { _id: { $in: Array.from(uniqueAuthorIds) } },
+      { $pull: { goris: { $in: descendantGoriIds } } }
+    );
+
+    // Update Community model
+    await Community.updateMany(
+      { _id: { $in: Array.from(uniqueCommunityIds) } },
+      { $pull: { goris: { $in: descendantGoriIds } } }
+    );
+
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to delete gori: ${error.message}`);
+  }
+}
+
+export async function fetchGoriById(goriId: string) {
+  connectToDB();
+  try {
     // TODO: Populate Community
-    const gori = await Gori.findById(id)
+    const gori = await Gori.findById(goriId)
       .populate({
         path: "author",
         model: User,
+        select: "_id id name image",
+      })
+      .populate({
+        path: "community",
+        model: Community,
         select: "_id id name image",
       })
       .populate({
@@ -112,8 +203,9 @@ export async function addCommentToGori(
   userId: string,
   path: string
 ) {
+  connectToDB();
+
   try {
-    connectToDB();
     // Adding comment
     // Find the original gori by its ID
     const originalGori = await Gori.findById(goriId);

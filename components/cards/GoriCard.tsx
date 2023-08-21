@@ -111,6 +111,13 @@ export default function GoriCard({
             </div>
           </div>
         </div>
+
+        {/* TODO: Delete Gori */}
+        {/* TODO: Show comment logos */}
+
+        {/* {!isComment && community && (
+
+        )} */}
       </div>
     </article>
   );
