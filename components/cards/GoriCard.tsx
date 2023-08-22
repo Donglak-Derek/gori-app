@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { classNames } from "uploadthing/client";
 import { formatDateString } from "@/lib/utils";
+import DeleteGori from "../forms/DeleteGori";
 
 interface Props {
   id: string;
@@ -115,6 +116,14 @@ export default function GoriCard({
         </div>
 
         {/* TODO: Delete Gori */}
+        <DeleteGori
+          goriId={JSON.stringify(id)}
+          currentUserId={currentUserId}
+          authorId={author.id}
+          parentId={parentId}
+          isComment={isComment}
+        />
+
         {/* TODO: Show comment logos */}
       </div>
       {!isComment && community && (
