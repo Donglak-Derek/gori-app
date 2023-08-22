@@ -1,6 +1,36 @@
-import { fetchUserPosts } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
+
+import { fetchCommunityPosts } from "@/lib/actions/community.actions";
+import { fetchUserPosts } from "@/lib/actions/user.actions";
+
 import GoriCard from "../cards/GoriCard";
+
+interface Result {
+  name: string;
+  image: string;
+  id: string;
+  goris: {
+    _id: string;
+    text: string;
+    parentId: string | null;
+    author: {
+      name: string;
+      image: string;
+      id: string;
+    };
+    community: {
+      id: string;
+      name: string;
+      image: string;
+    } | null;
+    createdAt: string;
+    children: {
+      author: {
+        image: string;
+      };
+    }[];
+  }[];
+}
 
 interface Props {
   currentUserId: string;
@@ -13,7 +43,13 @@ export default async function GorisTab({
   accountId,
   accountType,
 }: Props) {
-  let result = await fetchUserPosts(accountId);
+  let result: Result;
+
+  if (accountType === "Community") {
+    result = await fetchCommunityPosts(accountId);
+  } else {
+    result = await fetchUserPosts(accountId);
+  }
 
   if (!result) redirect("/");
 
