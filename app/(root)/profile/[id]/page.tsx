@@ -4,12 +4,11 @@ import { redirect } from "next/navigation";
 
 import { profileTabs } from "@/constants";
 
-import ProfileHeader from "@/components/shared/ProfileHeader";
-
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { fetchUser } from "@/lib/actions/user.actions";
-
 import GorisTab from "@/components/shared/GorisTab";
+import ProfileHeader from "@/components/shared/ProfileHeader";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+import { fetchUser } from "@/lib/actions/user.actions";
 
 export default async function page({ params }: { params: { id: string } }) {
   const user = await currentUser();
@@ -44,6 +43,7 @@ export default async function page({ params }: { params: { id: string } }) {
                 />
                 <p className="max-sm:hidden">{tab.label}</p>
 
+                {/* Count of goris */}
                 {tab.label === "Goris" && (
                   <p className="ml-1 rounded-sm bg-light-4 px-2 py-1 !text-tiny-medium text-light-2">
                     {userInfo?.goris?.length}

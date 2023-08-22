@@ -3,12 +3,12 @@ import { currentUser } from "@clerk/nextjs";
 
 import { communityTabs } from "@/constants";
 
-import ProfileHeader from "@/components/shared/ProfileHeader";
-import GorisTab from "@/components/shared/GorisTab";
-
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { fetchCommunityDetails } from "@/lib/actions/community.actions";
 import UserCard from "@/components/cards/UserCard";
+import GorisTab from "@/components/shared/GorisTab";
+import ProfileHeader from "@/components/shared/ProfileHeader";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
+import { fetchCommunityDetails } from "@/lib/actions/community.actions";
 
 export default async function page({ params }: { params: { id: string } }) {
   const user = await currentUser();

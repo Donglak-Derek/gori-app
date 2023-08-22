@@ -1,11 +1,14 @@
-import GoriCard from "@/components/cards/GoriCard";
-import { fetchGoriById } from "@/lib/actions/gori.actions";
-import { fetchUser } from "@/lib/actions/user.actions";
-import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import Comment from "@/components/forms/Comment";
+import { currentUser } from "@clerk/nextjs";
 
-// 3: 16
+import Comment from "@/components/forms/Comment";
+import GoriCard from "@/components/cards/GoriCard";
+
+import { fetchUser } from "@/lib/actions/user.actions";
+import { fetchGoriById } from "@/lib/actions/gori.actions";
+
+export const revalidate = 0;
+
 export default async function page({ params }: { params: { id: string } }) {
   if (!params.id) return null;
 
@@ -19,7 +22,7 @@ export default async function page({ params }: { params: { id: string } }) {
   const gori = await fetchGoriById(params.id);
 
   return (
-    <section>
+    <section className="relative">
       <div>
         <GoriCard
           key={gori._id}
