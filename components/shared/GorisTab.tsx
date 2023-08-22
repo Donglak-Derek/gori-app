@@ -1,4 +1,4 @@
-import { fetchUserGoris } from "@/lib/actions/user.actions";
+import { fetchUserPosts } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 import GoriCard from "../cards/GoriCard";
 
@@ -13,7 +13,7 @@ export default async function GorisTab({
   accountId,
   accountType,
 }: Props) {
-  let result = await fetchUserGoris(accountId);
+  let result = await fetchUserPosts(accountId);
 
   if (!result) redirect("/");
 

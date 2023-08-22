@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import GoriCard from "@/components/cards/GoriCard";
 
-import { fetchGoris } from "@/lib/actions/gori.actions";
+import { fetchPosts } from "@/lib/actions/gori.actions";
 import { fetchUser } from "@/lib/actions/user.actions";
 
 export default async function Home() {
@@ -13,7 +13,7 @@ export default async function Home() {
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
-  const result = await fetchGoris(1, 30);
+  const result = await fetchPosts(1, 30);
   console.log("Result!!!!!!!", result);
 
   return (
@@ -21,21 +21,21 @@ export default async function Home() {
       <h1 className="head-text text-left">Home</h1>
 
       <section className="mt-9 flex flex-col gap-10">
-        {result.goris.length === 0 ? (
+        {result.posts.length === 0 ? (
           <p className="no-result">No Goris found</p>
         ) : (
           <>
-            {result.goris.map((gori) => (
+            {result.posts.map((post) => (
               <GoriCard
-                key={gori._id}
-                id={gori._id}
+                key={post._id}
+                id={post._id}
                 currentUserId={user?.id || ""}
-                parentId={gori.parentId}
-                content={gori.text}
-                author={gori.author}
-                community={gori.community}
-                createdAt={gori.createdAt}
-                comments={gori.children}
+                parentId={post.parentId}
+                content={post.text}
+                author={post.author}
+                community={post.community}
+                createdAt={post.createdAt}
+                comments={post.children}
               />
             ))}
           </>

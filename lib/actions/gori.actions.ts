@@ -8,15 +8,15 @@ import Gori from "../models/gori.model";
 import User from "../models/user.model";
 import Community from "../models/community.model";
 
-export async function fetchGoris(pageNumber = 1, pageSize = 20) {
+export async function fetchPosts(pageNumber = 1, pageSize = 20) {
   try {
     connectToDB();
 
-    // Calculate the number of goris to skip based on the page number and page size.
+    // Calculate the number of posts to skip based on the page number and page size.
     const skipAmount = (pageNumber - 1) * pageSize;
 
-    // Create a query to fetch the goris that have no parent (top-level goris) (a gori that is not a comment/reply).
-    const gorisQuery = Gori.find({ parentId: { $in: [null, undefined] } })
+    // Create a query to fetch the posts that have no parent (top-level goris) (a gori that is not a comment/reply).
+    const postsQuery = Gori.find({ parentId: { $in: [null, undefined] } })
       .sort({ createdAt: "desc" })
       .skip(skipAmount)
       .limit(pageSize)
@@ -34,15 +34,15 @@ export async function fetchGoris(pageNumber = 1, pageSize = 20) {
         },
       });
 
-    const totalGorisCount = await Gori.countDocuments({
+    const totalPostsCount = await Gori.countDocuments({
       parentId: { $in: [null, undefined] },
-    }); // Get total number of goris
+    }); // Get total number of posts
 
-    const goris = await gorisQuery.exec();
+    const posts = await postsQuery.exec();
 
-    const isNext = totalGorisCount > skipAmount + goris.length;
+    const isNext = totalPostsCount > skipAmount + posts.length;
 
-    return { goris, isNext };
+    return { posts, isNext };
   } catch (error: any) {
     console.log("Error fetchGoris:", error);
     throw new Error(`Failed to fetchGoris: ${error.message}`);

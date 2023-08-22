@@ -64,7 +64,7 @@ export async function fetchUser(userId: string) {
   }
 }
 
-export async function fetchUserGoris(userId: string) {
+export async function fetchUserPosts(userId: string) {
   try {
     connectToDB();
 
