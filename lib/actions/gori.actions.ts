@@ -8,46 +8,6 @@ import Gori from "../models/gori.model";
 import User from "../models/user.model";
 import Community from "../models/community.model";
 
-interface Params {
-  text: string;
-  author: string;
-  communityId: string | null;
-  path: string;
-}
-
-export async function createGori({ text, author, communityId, path }: Params) {
-  try {
-    connectToDB();
-
-    const communityIdObject = await Community.findOne(
-      { id: communityId },
-      { _id: 1 }
-    );
-
-    const createdGori = await Gori.create({
-      text,
-      author,
-      community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
-    });
-
-    // Update user model
-    await User.findByIdAndUpdate(author, {
-      $push: { goris: createdGori._id },
-    });
-
-    if (communityIdObject) {
-      // Update Community model
-      await Community.findByIdAndUpdate(communityIdObject, {
-        $push: { goris: createdGori._id },
-      });
-    }
-
-    revalidatePath(path);
-  } catch (error: any) {
-    throw new Error(`Failed to create gori: ${error.message}`);
-  }
-}
-
 export async function fetchGoris(pageNumber = 1, pageSize = 20) {
   try {
     connectToDB();
@@ -86,6 +46,46 @@ export async function fetchGoris(pageNumber = 1, pageSize = 20) {
   } catch (error: any) {
     console.log("Error fetchGoris:", error);
     throw new Error(`Failed to fetchGoris: ${error.message}`);
+  }
+}
+
+interface Params {
+  text: string;
+  author: string;
+  communityId: string | null;
+  path: string;
+}
+
+export async function createGori({ text, author, communityId, path }: Params) {
+  try {
+    connectToDB();
+
+    const communityIdObject = await Community.findOne(
+      { id: communityId },
+      { _id: 1 }
+    );
+
+    const createdGori = await Gori.create({
+      text,
+      author,
+      community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
+    });
+
+    // Update user model
+    await User.findByIdAndUpdate(author, {
+      $push: { goris: createdGori._id },
+    });
+
+    if (communityIdObject) {
+      // Update Community model
+      await Community.findByIdAndUpdate(communityIdObject, {
+        $push: { goris: createdGori._id },
+      });
+    }
+
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to create gori: ${error.message}`);
   }
 }
 

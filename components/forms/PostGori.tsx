@@ -2,42 +2,32 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { useOrganization } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { usePathname, useRouter } from "next/navigation";
+
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
+import { Button } from "@/components/ui/button";
 import { Textarea } from "../ui/textarea";
-import { zodResolver } from "@hookform/resolvers/zod";
 
-import { usePathname, useRouter } from "next/navigation";
-
-// import { updateUser } from "@/lib/actions/user.actions";
 import { GoriValidation } from "@/lib/validations/gori";
 import { createGori } from "@/lib/actions/gori.actions";
-import { useOrganization } from "@clerk/nextjs";
 
 interface Props {
-  user: {
-    id: string;
-    onjectId: string;
-    username: string;
-    name: string;
-    bio: string;
-    image: string;
-  };
-  btnTitle: string;
+  userId: string;
 }
 
-export default function PostGori({ userId }: { userId: string }) {
+export default function PostGori({ userId }: Props) {
   const router = useRouter();
   const pathname = usePathname();
+
   const { organization } = useOrganization();
 
   const form = useForm({

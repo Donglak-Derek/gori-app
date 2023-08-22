@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 import User from "../models/user.model";
 import Gori from "../models/gori.model";
+import Community from "../models/community.model";
 
 import { connectToDB } from "../mongoose";
 
@@ -53,11 +54,10 @@ export async function fetchUser(userId: string) {
   try {
     connectToDB();
 
-    return await User.findOne({ id: userId });
-    // .populate({
-    //   path: "communities",
-    //   model: Community,
-    // });
+    return await User.findOne({ id: userId }).populate({
+      path: "communities",
+      model: Community,
+    });
   } catch (error: any) {
     console.log("Error fetchUser:", error);
     throw new Error(`Failed to fetch user: ${error.message}`);
@@ -74,15 +74,22 @@ export async function fetchUserGoris(userId: string) {
     const goris = await User.findOne({ id: userId }).populate({
       path: "goris",
       model: Gori,
-      populate: {
-        path: "children",
-        model: Gori,
-        populate: {
-          path: "author",
-          model: User,
-          select: "name image id",
+      populate: [
+        {
+          path: "community",
+          model: Community,
+          select: "name id image _id",
         },
-      },
+        {
+          path: "children",
+          model: Gori,
+          populate: {
+            path: "author",
+            model: User,
+            select: "name image id",
+          },
+        },
+      ],
     });
 
     return goris;
