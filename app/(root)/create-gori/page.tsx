@@ -1,8 +1,8 @@
-import PostGori from "@/components/forms/PostGori";
-import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import React from "react";
+
+import PostGori from "@/components/forms/PostGori";
+import { fetchUser } from "@/lib/actions/user.actions";
 
 export default async function page() {
   const user = await currentUser();

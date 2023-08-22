@@ -70,11 +70,11 @@ export async function fetchCommunityDetails(id: string) {
   }
 }
 
-export async function fetchCommunityGoris(id: string) {
+export async function fetchCommunityPosts(id: string) {
   try {
     connectToDB();
 
-    const communityGoris = await Community.findById(id).populate({
+    const communityPosts = await Community.findById(id).populate({
       path: "goris",
       model: Gori,
       populate: [
@@ -95,10 +95,10 @@ export async function fetchCommunityGoris(id: string) {
       ],
     });
 
-    return communityGoris;
+    return communityPosts;
   } catch (error) {
     // Handle any errors
-    console.error("Error fetching community goris:", error);
+    console.error("Error fetching community posts:", error);
     throw error;
   }
 }

@@ -14,7 +14,7 @@ export default async function Home() {
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   const result = await fetchGoris(1, 30);
-  console.log(result);
+  console.log("Result!!!!!!!", result);
 
   return (
     <>

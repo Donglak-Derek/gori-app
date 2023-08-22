@@ -65,6 +65,7 @@ export async function createGori({ text, author, communityId, path }: Params) {
       { _id: 1 }
     );
 
+    console.log("communityIdObject222222222222!!!!!", communityId);
     const createdGori = await Gori.create({
       text,
       author,
