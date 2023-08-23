@@ -26,9 +26,9 @@ export default async function Home({
   return (
     <>
       <h1 className="head-text text-left">
-        Hi {user.username} This is Homepage.
+        What are you thinking? (Use Korean)
       </h1>
-      {/* 
+
       <section className="mt-9 flex flex-col gap-10">
         {result.posts.length === 0 ? (
           <p className="no-result">No Goris found</p>
@@ -55,7 +55,7 @@ export default async function Home({
         path="/"
         pageNumber={searchParams?.page ? +searchParams.page : 1}
         isNext={result.isNext}
-      /> */}
+      />
     </>
   );
 }
