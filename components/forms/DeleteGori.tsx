@@ -1,9 +1,9 @@
 "use client";
 
-import { deleteGori } from "@/lib/actions/gori.actions";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { threadId } from "worker_threads";
+
+import { deleteGori } from "@/lib/actions/gori.actions";
 
 interface Props {
   goriId: string;

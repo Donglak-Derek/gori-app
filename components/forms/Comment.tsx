@@ -2,7 +2,9 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { usePathname } from "next/navigation";
+
 import {
   Form,
   FormControl,
@@ -13,14 +15,12 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "../ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 // import { updateUser } from "@/lib/actions/user.actions";
 import { CommentValidation } from "@/lib/validations/gori";
 // import { createGori } from "@/lib/actions/gori.actions";
-import Image from "next/image";
 import { addCommentToGori } from "@/lib/actions/gori.actions";
 
 interface Props {
@@ -28,15 +28,15 @@ interface Props {
   currentUserImg: string;
   currentUserId: string;
 }
+
 export default function Comment({
   goriId,
   currentUserImg,
   currentUserId,
 }: Props) {
-  const router = useRouter();
   const pathname = usePathname();
 
-  const form = useForm({
+  const form = useForm<z.infer<typeof CommentValidation>>({
     resolver: zodResolver(CommentValidation),
     defaultValues: {
       gori: "",
@@ -73,12 +73,11 @@ export default function Comment({
               <FormControl className="border-none bg-transparent">
                 <Input
                   type="text"
-                  placeholder="Share your thoughts in Korean?"
-                  className="no-focus text-light-1 outline-none"
                   {...field}
+                  placeholder="Comment..."
+                  className="no-focus text-light-1 outline-none"
                 />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />

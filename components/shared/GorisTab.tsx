@@ -75,7 +75,11 @@ export default async function GorisTab({
                   id: gori.author.id,
                 }
           }
-          community={gori.community} // TODO
+          community={
+            accountType === "Community"
+              ? { name: result.name, id: result.id, image: result.image }
+              : gori.community
+          }
           createdAt={gori.createdAt}
           comments={gori.children}
         />
