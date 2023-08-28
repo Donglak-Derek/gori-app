@@ -17,9 +17,7 @@ export default async function Home() {
 
   return (
     <>
-      <h1 className="head-text text-left">
-        Hi {user.username} This is Homepage.
-      </h1>
+      <h1 className="head-text text-left">안녕! {user.username}! </h1>
 
       <CoursesList />
     </>

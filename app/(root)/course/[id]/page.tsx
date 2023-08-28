@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs";
 import { fetchUser } from "@/lib/actions/user.actions";
 
 import { fetchClasseById } from "@/lib/actions/course.actions";
-import Wordcard from "@/components/cards/Wordcard";
+import WordCard from "@/components/cards/WordCard";
 
 export const revalidate = 0;
 
@@ -17,15 +17,15 @@ export default async function page({ params }: { params: { id: string } }) {
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
-  // current Gori
+  // current Course
   const result = await fetchClasseById(params.id);
-  console.log("result!!!!!!!!!!", result);
+
   return (
     <section className="relative">
       <div>
         <>
-          {result.wordcards.map((wordcard: any) => (
-            <Wordcard
+          {result.wordcards.map((wordcard: any, index: number) => (
+            <WordCard
               key={wordcard._id}
               id={wordcard._id}
               kind={wordcard.kind}

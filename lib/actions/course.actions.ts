@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { connectToDB } from "../mongoose";
 import Lesson from "../models/lesson.model";
 import Classe from "../models/classe.model";
-import Wordcard from "../models/wordcard.model";
+import WordCard from "../models/wordCard.model";
 
 export async function fetchCourses() {
   try {
@@ -37,7 +37,7 @@ export async function fetchClasseById(ClasseId: string) {
     const classe = await Classe.findById(ClasseId)
       .populate({
         path: "wordcards",
-        model: Wordcard,
+        model: WordCard,
       })
       .exec();
 

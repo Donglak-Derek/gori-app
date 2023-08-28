@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const WordcardSchema = new Schema({
+const WordCardSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   cardNumber: { type: Number, required: true },
   kind: { type: String, required: true },
@@ -8,7 +8,7 @@ const WordcardSchema = new Schema({
   korean: { type: String, required: true },
   english: { type: String, required: true },
 });
-const Wordcard =
-  mongoose.models.Wordcard || mongoose.model("Wordcard", WordcardSchema);
+const WordCard =
+  mongoose.models.WordCard || mongoose.model("WordCard", WordCardSchema);
 
-export default Wordcard;
+export default WordCard;

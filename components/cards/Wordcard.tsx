@@ -1,8 +1,4 @@
-import Image from "next/image";
-import Link from "next/link";
-
-import { formatDateString } from "@/lib/utils";
-import DeleteGori from "../forms/DeleteGori";
+import { Button } from "../ui/button";
 
 interface Props {
   id: string;
@@ -14,7 +10,7 @@ interface Props {
   currentUserId: string;
 }
 
-export default function GoriCard({
+export default function WordCard({
   id,
   cardNumber,
   kind,
@@ -23,23 +19,49 @@ export default function GoriCard({
   english,
   currentUserId,
 }: Props) {
+  const isListening = "Listening";
+
   return (
-    <article className="flex w-full flex-col rounded-xl">
-      <div className="flex items-start justify-between">
-        <div className="flex w-full flex-1 flex-row gap-4">
-          <div className="flex flex-col items-center">
-            {id} {cardNumber}
-            <div className="gori-card_bar" />
+    <article className="wordCard">
+      <div className="w-full h-94 grid grid-cols-1 grid-flow-col-dense grid-rows-6 gap-4">
+        <div className="row-span-1 grid grid-cols-3 gap-1 items-center">
+          <div></div>
+          <div className="text-center">
+            {isListening === "Listening" && (
+              <p className="bg-green-500 rounded-lg py-3 text-base-medium text-gray-900">
+                I am listening...
+              </p>
+            )}
           </div>
-
-          <div className="flex w-full flex-col">
-            <h4 className="cursor-pointer text-base-semibold text-light-1">
-              {smallTitle}
-            </h4>
-
-            <p className="text-small-regular text-light-2">{korean}</p>
-            <p className="text-small-regular text-light-2">{english}</p>
+          <div className="flex justify-end">
+            <Button className="text-sm text-gray-500 ">Save</Button>
           </div>
+        </div>
+
+        <div className="row-start-2 row-end-4 h-48 flex justify-center items-center">
+          <h4 className="cursor-pointer text-3xl font-bold text-white">
+            {korean}
+          </h4>
+        </div>
+
+        <div className="flex justify-center items-center">
+          <Button
+            size="lg"
+            variant="secondary"
+            className="rounded-full w-28 h-28 text-heading4-medium"
+          >
+            Play
+          </Button>
+        </div>
+
+        <div className=" flex justify-center items-center">
+          <p className="text-sm text-white">{english}</p>
+        </div>
+
+        <div className="flex justify-center items-center">
+          <Button size="lg" variant="ghost">
+            Next
+          </Button>
         </div>
       </div>
     </article>

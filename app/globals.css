@@ -32,6 +32,15 @@
     @apply rounded-lg bg-primary-500 px-5 py-1.5 text-small-regular !text-light-1 !important;
   }
 
+  /* WordCard Card */
+  .wordCard {
+    @apply grid rounded-lg bg-dark-2 px-4 py-5 mb-10 w-full h-[50rem] shadow-md;
+  }
+
+  .wordCard_btn {
+    @apply rounded-lg bg-primary-500 px-5 py-1.5 text-small-regular !text-light-1 !important;
+  }
+
   /* gori card  */
   .gori-card_bar {
     @apply relative mt-2 w-0.5 grow rounded-full bg-neutral-800;
