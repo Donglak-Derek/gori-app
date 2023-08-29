@@ -1,8 +1,11 @@
+"use client";
+
 import { Button } from "../ui/button";
+import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis";
 
 interface Props {
   id: string;
-  cardNumber: number;
+  cardNumber: any;
   kind: string;
   smallTitle: string;
   korean: string;
@@ -25,7 +28,7 @@ export default function WordCard({
     <article className="wordCard">
       <div className="w-full h-94 grid grid-cols-1 grid-flow-col-dense grid-rows-6 gap-4">
         <div className="row-span-1 grid grid-cols-3 gap-1 items-center">
-          <div></div>
+          <div className="text-light-1">{currentUserId}</div>
           <div className="text-center">
             {isListening === "Listening" && (
               <p className="bg-green-500 rounded-lg py-3 text-base-medium text-gray-900">
