@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 /** Course can have many lessons */
 const CourseSchema = new Schema({
   _id: Schema.Types.ObjectId,
+  url: { type: String },
   title: { type: String, required: true },
   description: { type: String, required: true },
   level: { type: String, required: true },
