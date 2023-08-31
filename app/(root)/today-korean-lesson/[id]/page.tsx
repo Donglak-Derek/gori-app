@@ -4,9 +4,10 @@ import { currentUser } from "@clerk/nextjs";
 import { fetchUser } from "@/lib/actions/user.actions";
 
 import { fetchClasseById } from "@/lib/actions/course.actions";
-import WordCard from "@/components/cards/WordCard";
 
-export const revalidate = 0;
+import WordCardsList from "@/components/shared/WordCardsList";
+
+// export const revalidate = 0;
 
 export default async function page({ params }: { params: { id: string } }) {
   if (!params.id) return null;
@@ -18,26 +19,13 @@ export default async function page({ params }: { params: { id: string } }) {
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   // current Course
-  const result = await fetchClasseById(params.id);
+  const result: any = await fetchClasseById(params.id);
+  const serializedResult = JSON.stringify(result);
 
   return (
     <section className="relative">
       <div>
-        <>
-          {result.wordcards.map((wordcard: any, index: number) => (
-            <WordCard
-              key={JSON.stringify(wordcard._id)}
-              url={JSON.stringify(decodeURIComponent(wordcard.url))}
-              id={JSON.stringify(wordcard._id)}
-              kind={JSON.stringify(wordcard.kind)}
-              smallTitle={JSON.stringify(wordcard.smallTitle)}
-              korean={JSON.stringify(wordcard.korean)}
-              english={JSON.stringify(wordcard.english)}
-              cardNumber={JSON.stringify(wordcard.cardNumber)}
-              currentUserId={user?.id || ""}
-            />
-          ))}
-        </>
+        <WordCardsList user={user} result={serializedResult} />
       </div>
     </section>
   );

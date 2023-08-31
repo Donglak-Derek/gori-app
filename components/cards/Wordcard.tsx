@@ -16,6 +16,7 @@ interface Props {
   korean: string;
   english: string;
   currentUserId: string;
+  onNext: () => void;
 }
 
 export default function WordCard({
@@ -27,19 +28,20 @@ export default function WordCard({
   korean,
   english,
   currentUserId,
+  onNext,
 }: Props) {
-  function cleanString(str: string) {
-    return str.replace(/^"|"$/g, "");
-  }
+  // function cleanString(str: string) {
+  //   return str.replace(/^"|"$/g, "");
+  // }
 
-  // clean string from stringify
-  url = cleanString(url);
-  id = cleanString(id);
-  kind = cleanString(kind);
-  smallTitle = cleanString(smallTitle);
-  korean = cleanString(korean);
-  english = cleanString(english);
-  cardNumber = cleanString(cardNumber);
+  // // clean string from stringify
+  // url = cleanString(url);
+  // id = cleanString(id);
+  // kind = cleanString(kind);
+  // smallTitle = cleanString(smallTitle);
+  // korean = cleanString(korean);
+  // english = cleanString(english);
+  // cardNumber = cleanString(cardNumber);
 
   const isListening = "Listening";
   const [video, setVideo] = useState<any>(null);
@@ -70,6 +72,16 @@ export default function WordCard({
       />
     );
   }, [isPlaying, currentPauseIndex]);
+
+  const handleVideoPause = () => {
+    // logic to show modal goes here
+    console.log("handleVideoPause");
+  };
+
+  const handleNextClick = () => {
+    onNext(); // move to the next card
+    setIsPlaying(true); // resume video playing
+  };
 
   return (
     <article className="wordCard">
@@ -112,7 +124,7 @@ export default function WordCard({
           </div>
 
           <div className="flex justify-center items-center">
-            <Button size="lg" variant="ghost">
+            <Button size="lg" variant="ghost" onClick={handleNextClick}>
               Next
             </Button>
           </div>
