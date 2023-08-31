@@ -27,6 +27,7 @@ export default async function page({ params }: { params: { id: string } }) {
           {result.wordcards.map((wordcard: any, index: number) => (
             <WordCard
               key={JSON.stringify(wordcard._id)}
+              url={JSON.stringify(wordcard.url)}
               id={JSON.stringify(wordcard._id)}
               kind={JSON.stringify(wordcard.kind)}
               smallTitle={JSON.stringify(wordcard.smallTitle)}

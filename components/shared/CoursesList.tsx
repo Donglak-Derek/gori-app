@@ -35,7 +35,9 @@ export default async function CoursesList() {
                         <div className="grid grid-cols-1 mt-4">
                           {lesson.classes.map((classe: any, index: number) => (
                             <div key={index} className="text-light-3xl w-full">
-                              <Link href={`/course/${classe._id}`}>
+                              <Link
+                                href={`/${classe.classeStyle}/${classe._id}`}
+                              >
                                 <p className="block border w-full rounded-md p-2 hover:bg-white hover:text-black">
                                   {classe.classeTitle}
                                 </p>

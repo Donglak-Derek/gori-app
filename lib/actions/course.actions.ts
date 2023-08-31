@@ -7,6 +7,7 @@ import { connectToDB } from "../mongoose";
 import Lesson from "../models/lesson.model";
 import Classe from "../models/classe.model";
 import WordCard from "../models/wordCard.model";
+import mongoose from "mongoose";
 
 export async function fetchCourses() {
   try {
@@ -32,6 +33,11 @@ export async function fetchCourses() {
 }
 
 export async function fetchClasseById(ClasseId: string) {
+  // Validate ClasseId
+  if (!ClasseId || !mongoose.Types.ObjectId.isValid(ClasseId)) {
+    throw new Error(`Invalid ClasseId: ${ClasseId}`);
+  }
+
   connectToDB();
   try {
     const classe = await Classe.findById(ClasseId)
