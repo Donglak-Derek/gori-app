@@ -30,19 +30,6 @@ export default function WordCard({
   currentUserId,
   onNext,
 }: Props) {
-  // function cleanString(str: string) {
-  //   return str.replace(/^"|"$/g, "");
-  // }
-
-  // // clean string from stringify
-  // url = cleanString(url);
-  // id = cleanString(id);
-  // kind = cleanString(kind);
-  // smallTitle = cleanString(smallTitle);
-  // korean = cleanString(korean);
-  // english = cleanString(english);
-  // cardNumber = cleanString(cardNumber);
-
   const isListening = "Listening";
   const [video, setVideo] = useState<any>(null);
   const [isPlaying, setIsPlaying] = useState(true); // State to manage play/pause
@@ -66,6 +53,7 @@ export default function WordCard({
           ) {
             setIsPlaying(false);
             setCurrentPauseIndex(currentPauseIndex + 1);
+            onNext();
           }
         }}
         className=" bg-dark-1 overflow-hidden"

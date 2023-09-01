@@ -17,7 +17,7 @@ interface WordCard {
 }
 
 interface Props {
-  user: User;
+  user: any;
   result: any;
 }
 
@@ -28,7 +28,9 @@ export default function WordCardsList({ user, result }: Props) {
     setCurrentWordCardIndex(currentWordCardIndex + 1);
   };
 
+  // console.log("user!!!!!", user);
   //deserialize
+  const deUserInfo = JSON.parse(user);
   const deResult = JSON.parse(result);
 
   return (
@@ -47,7 +49,7 @@ export default function WordCardsList({ user, result }: Props) {
                 korean={wordcard.korean}
                 english={wordcard.english}
                 cardNumber={wordcard.cardNumber}
-                currentUserId={user?.id || ""}
+                currentUserId={deUserInfo?.id || ""}
                 onNext={handleNext}
               />
             )

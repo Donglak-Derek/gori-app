@@ -18,18 +18,19 @@ export default async function page({ params }: { params: { id: string } }) {
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+  const serializedUser = JSON.stringify(userInfo);
   // current Course
   const result: any = await fetchClasseById(params.id);
   const serializedResult = JSON.stringify(result);
 
-  const sanitizedUser = Object.assign({}, user, {
-    verification: undefined,
-  });
+  // const sanitizedUser = Object.assign({}, user, {
+  //   verification: undefined,
+  // });
 
   return (
     <section className="relative">
       <div>
-        <WordCardsList user={user} result={serializedResult} />
+        <WordCardsList user={serializedUser} result={serializedResult} />
       </div>
     </section>
   );
