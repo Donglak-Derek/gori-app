@@ -23,6 +23,7 @@ export default async function page({ params }: { params: { id: string } }) {
   const result: any = await fetchClasseById(params.id);
   const serializedResult = JSON.stringify(result);
 
+  console.log(result);
   // const sanitizedUser = Object.assign({}, user, {
   //   verification: undefined,
   // });
